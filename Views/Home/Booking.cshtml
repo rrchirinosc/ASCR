@@ -1,0 +1,39 @@
+﻿@model PreBookingViewModel
+
+@{
+    ViewData["Title"] = "Booking";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div class="container">
+    
+    <div class="row">       
+        <div class="m-4 d-flex align-items-center">            
+            <label class="mr-4" style="min-width:fit-content" for="carType">Car Type:</label>
+            <select id="carType" class="form-control" name="carType" data-val="true" data-val-required="*">
+                <option value=1>Small</option>
+                <option value=2>Estate</option>
+                <option value=3>Truck</option>
+            </select>
+        </div>
+        @*<div class="m-4">
+            @{
+                //Only allow booking from today to a week in advance
+                string firstDate = DateTime.Now.ToString("yyyy-MM-dd");
+                string lastDate = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd");
+
+                <label class="mr-4" for="rentalDay">Rental Day:</label>
+                <input type="date" id="rentalDay" name="rentalDay" value=@firstDate min=@firstDate max=@lastDate />
+            }
+        </div>*@
+    </div>
+    @*<div class="row d-flex justify-content-end mt-5">
+        <button type="button" class="btn btn-primary app-colors">Check Availability</button>
+    </div>*@
+    <ul>
+        @foreach (var car in Model.AvailableCars)
+        {
+            <li>@car.Description, @car.Id, @car.Registration</li>
+        }
+    </ul>
+</div>
