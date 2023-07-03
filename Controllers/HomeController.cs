@@ -60,6 +60,10 @@ namespace ASolCarRental.Controllers
             BookingViewModel model;
 
             model = await BookingViewModel.GetBookingData(connection, bookingId);
+
+            if (model.Booking.Count == 0)
+                return null;
+
             return Json(model.Booking);
         }
 
@@ -77,25 +81,67 @@ namespace ASolCarRental.Controllers
             booking.CustomerId = CustomerId;
             booking.CarRegistration = CarRegistration;
             booking.CarType = CarType;
+            booking.Concluded = false;
 
             BookingId = await BookingViewModel.BookCar(connection, booking);
 
             if(BookingId != 0) {
                 // Mark booked car as unavailable
                 //TODO: Handle possible error
-                int result = await SetCarAsUnAvailable(CarId);
+                int result = await SetCarAvailability(CarId, false);
             }
 
             return BookingId;
         }
 
 
-        private async Task<int> SetCarAsUnAvailable(int carId)
+        
+        public async Task<float> CalculateBookingCost(string BookingId, int Mileage)
         {
-            int result = await BookingViewModel.SetCarAsUnAvailable(connection, carId);
+            BookingViewModel model, model2;
+            short carType = 0;
+            float totalPrice = 0;
+            int days = 0;
+            int mileage = 0;
+
+            //TODO: refactor should retrieve DTOs directly instead
+            model = await BookingViewModel.GetBookingData(connection, BookingId);
+
+            carType = model.Booking[0].CarType;
+            model2 = await BookingViewModel.GetPricingData(connection, carType);
+
+            // get days and mileage
+            //!!! For testing purposes the return date is moved ahead 7 days to have valid booking data
+            DateTime returnDate = DateTime.Now.AddDays(7);
+            days = returnDate.Subtract(model.Booking[0].RentalDate).Days;
+            mileage = Mileage - model.Booking[0].CarMileage;
+
+            if (days < 0 || mileage < 0)
+                return -1;
+
+            // calculate price
+            totalPrice = model2.Pricing[0].BaseDailyPrice * days * model2.Pricing[0].DayMultiplier + model2.Pricing[0].BaseMileagePrice * model2.Pricing[0].MileageMultiplier * mileage;
+
+            return (float)Math.Round(totalPrice, MidpointRounding.ToEven);
+        }
+
+
+        private async Task<int> SetCarAvailability(int carId, bool available)
+        {
+            int result = await BookingViewModel.SetCarAvailability(connection, carId, available);
             return result;
         }
 
+        public async Task<int> FinishBooking(string bookingId) {
+
+            BookingViewModel model;
+            model = await BookingViewModel.GetBookingData(connection, bookingId);
+            await BookingViewModel.SetCarAvailability(connection, model.Booking[0].BookingId, true);
+
+            int result = await BookingViewModel.MarkBookingAsCompleted(connection, bookingId);
+           
+            return result;
+        }
 
 
         public IActionResult BookingReturn()

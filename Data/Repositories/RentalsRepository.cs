@@ -48,22 +48,22 @@ namespace ASolCarRental.Repositories
 
         public int BookCar(BookingDTO Booking)
         {
-            string sql = "INSERT INTO [Rentals] (CarId, RentalDate, CustomerId, CarMileage, CarType, CarRegistration)" +
+            string sql = "INSERT INTO [Rentals] (CarId, RentalDate, CustomerId, CarMileage, CarType, CarRegistration, Concluded)" +
                     " Output Inserted.BookingId" +
-                    " Values (@CarId, @RentalDate, @CustomerId, @CarMileage, @CarType, @CarRegistration)";
+                    " Values (@CarId, @RentalDate, @CustomerId, @CarMileage, @CarType, @CarRegistration, @Concluded)";
 
-            var obj = _connection.QuerySingle(sql, new { Booking.CarId, Booking.RentalDate, Booking.CustomerId, Booking.CarMileage, Booking.CarType, Booking.CarRegistration});
+            var obj = _connection.QuerySingle(sql, new { Booking.CarId, Booking.RentalDate, Booking.CustomerId, Booking.CarMileage, Booking.CarType, Booking.CarRegistration, Booking.Concluded});
 
             return obj != null ? obj.BookingId : 0;
         }
 
-        public int SetCarAsUnAvailable(int carId){
+        public int SetCarAvailability(int carId, bool available){
             string sql = "UPDATE [Cars] SET [Available] = @state" +
                         " WHERE[Id] = @id";
 
             return _connection.Execute(sql, new
             {
-                state = false,
+                state = available,
                 id = carId
             });
         }
@@ -77,5 +77,28 @@ namespace ASolCarRental.Repositories
 
             return _connection.Query<BookingDTO>(sql);
         }
+
+        public IEnumerable<PricingDTO> GetPricingData(short carType)
+        {
+            string sql = string.Format("SELECT *" +
+                                        " FROM [Prices]" +
+                                        " WHERE [Prices].CarType = {0}", carType);
+
+            return _connection.Query<PricingDTO>(sql);
+        }
+
+
+        public int MarkBookingAsCompleted(string bookingId)
+        {
+            string sql = "UPDATE [Rentals] SET [Concluded] = @state" +
+                        " WHERE [BookingId] = @id";
+
+            return _connection.Execute(sql, new
+            {
+                state = true,
+                id = bookingId
+            });
+        }
+        
     }
 }

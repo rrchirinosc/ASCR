@@ -1,25 +1,72 @@
-﻿@{
+﻿@model BookingViewModel
+
+@{
     ViewData["Title"] = "Booking Return";
 }
 <h1>@ViewData["Title"]</h1>
 
-<hr/>
+<hr />
 
 <div class="container d-flex flex-wrap">
-    <div class="col-lg-6 mb-5">
+    <div class="col-lg-5 m-4 p-5" style="border: 1px solid #aaaaaa; ">
         <div class="row">
             <div>
                 <label class="mr-4" style="min-width:fit-content" for="bookingId"><b>Booking Id</b></label>
                 <input type="text" class="form-control" id="booking-id" name="bookingId" data-val="true" data-val-required="*">
             </div>
         </div>
+        <div id="existingBooking"></div>
         <div class="row d-flex mt-5">
-            <button id=""retrieve-booking" type="button" class="btn btn-secondary app-colors booking-btn" onclick="retrieveBooking()">Retrieve Booking</button>
+            <button id="" retrieve-booking" type="button" class="btn btn-secondary app-colors booking-btn" onclick="retrieveBooking()">Retrieve Booking</button>
         </div>
-        <div class="row mt-5">
-            <div id="existingBooking"></div>
-        </div>        
+    </div>
+    <div class="col-lg-5 m-4">
+        <label class="mr-4" for="carReturnForm"><b>Booking Calculation</b></label>
+        <div id="car-return-form" name="carReturnForm">
+            @using (Html.BeginForm(FormMethod.Post, new { id = "carReturnForm" }))
+            {
+                <div class="row">
+                    <div>
+                        <label class="mr-4" style="min-width:fit-content" for="pricingBookingID"><b>Booking Id</b></label>
+                        <input type="text" class="form-control" id="pricing-booking-id" name="pricingBookingID" data-val="true" data-val-required="*" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div>
+                        @{
+                            // show current date/time
+                            string currentTime = DateTime.Now.ToString("s");
+
+                            <label class="mr-4" style="min-width:fit-content" for="currentTime"><b>Timestamp</b></label>
+                            <input type="text" class="form-control" id="return-time" name="currentTime" value=@currentTime data-val="true" data-val-required="*" readonly>
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div>
+                        <label class="mr-4" style="min-width:fit-content" for="currentMileage"><b>Current Mileage</b></label>
+                        <input type="text" class="form-control" id="current-mileage" name="currentMileage" data-val="true" data-val-required="*">
+                    </div>
+                </div>
+                <div class="row d-flex mt-5">
+                    <button id="calculate-booking" type="button" class="btn btn-secondary app-colors booking-btn" onclick="calculateRentalCost()">Calculate Booking</button>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row m-4 p-5" style="border:1px solid #aaaaaa">
+        <div class="p-0">
+            <label class="booking-form-label" for="totalPrice">Total Price:</label>
+            <input type="text" id="total-price" name="totalPrice">
+            <span class="pl-2">kr</span>
+        </div>
+        <div class="row d-flex mt-5">
+            <button id="conclude-rental" type="button" class="btn btn-secondary app-colors booking-btn" onclick="concludeRental()">Complete Rental</button>
+        </div>
     </div>
 </div>
+
+
+
 
 <script src="~/js/Home/BookingReturn.js" asp-append-version="true"></script>

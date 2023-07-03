@@ -134,11 +134,16 @@ function bookCar(e) {
 
     e.preventDefault();
 
+    let carId = $('#car-id').val();
+
+    if (carId === "")
+        return;
+
     //if ($('#carBookingForm').valid()) {
 
         var url = "/Home/BookCar";
         var data = {
-            CarId: $('#car-id').val(),
+            CarId: carId,
             Mileage: $('#car-mileage').val(),   // not really needed here
             BookingDate: $('#booking-date').val(),
             CustomerId: $('#customer-id').val(),

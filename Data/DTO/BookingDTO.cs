@@ -14,5 +14,6 @@ namespace ASolCarRental.Data.DTO
         public int CarMileage { get; set; }
         public string CustomerId { get; set; }
         public DateTime RentalDate { get; set; }
+        public bool Concluded { get; set; }
     }
 }
