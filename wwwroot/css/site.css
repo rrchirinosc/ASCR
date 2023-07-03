@@ -97,3 +97,20 @@ body {
 .selector-item:hover {
     font-weight: 400;
 }
+
+.car-row {
+    padding: 20px;
+    border: 1px solid #00000e20;
+}
+
+.car-row:hover {
+    background-color:#edd4cc;
+}
+
+.booking-form-label {
+    width:120px;
+    justify-content:left !important;
+    margin-right: 15px;
+}
+
+
