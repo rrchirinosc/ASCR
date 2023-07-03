@@ -28,7 +28,9 @@ namespace ASolCarRental.Controllers
              IOptions<ApplicationOptions> appOptions)
         {
             AppOptions = appOptions.Value;
-            string cs = DecryptString(key, AppOptions.ConnectionString);
+            //TODO: Enable after testing -- use unencrypted value for now
+            //string cs = DecryptString(key, AppOptions.ConnectionString);
+            string cs = AppOptions.ConnectionString;
 
             // create connection if none created
             if(_connection == null)
