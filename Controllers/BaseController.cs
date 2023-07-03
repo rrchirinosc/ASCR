@@ -22,6 +22,8 @@ namespace ASolCarRental.Controllers
         private static SqlConnection _connection = null;
         private string key = "ASolCarRental.Infrastructure.Opt";
 
+        protected SqlConnection connection { get { return _connection; } }
+
         public BaseController(
              IOptions<ApplicationOptions> appOptions)
         {
@@ -85,8 +87,5 @@ namespace ASolCarRental.Controllers
                 }
             }
         }
-
-        protected SqlConnection Connection() { return _connection; }
-
     }
 }
