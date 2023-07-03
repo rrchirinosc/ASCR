@@ -3,3 +3,23 @@
 }
 <h1>@ViewData["Title"]</h1>
 
+<hr/>
+
+<div class="container d-flex flex-wrap">
+    <div class="col-lg-6 mb-5">
+        <div class="row">
+            <div>
+                <label class="mr-4" style="min-width:fit-content" for="bookingId"><b>Booking Id</b></label>
+                <input type="text" class="form-control" id="booking-id" name="bookingId" data-val="true" data-val-required="*">
+            </div>
+        </div>
+        <div class="row d-flex mt-5">
+            <button id=""retrieve-booking" type="button" class="btn btn-secondary app-colors booking-btn" onclick="retrieveBooking()">Retrieve Booking</button>
+        </div>
+        <div class="row mt-5">
+            <div id="existingBooking"></div>
+        </div>        
+    </div>
+</div>
+
+<script src="~/js/Home/BookingReturn.js" asp-append-version="true"></script>
