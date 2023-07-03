@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="col-lg-5 m-4">
-        <label class="mr-4" for="carReturnForm"><b>Booking Calculation</b></label>
+        <label class="mr-4 mb-4" for="carReturnForm"><b>Booking Calculation</b></label>
         <div id="car-return-form" name="carReturnForm">
             @using (Html.BeginForm(FormMethod.Post, new { id = "carReturnForm" }))
             {
@@ -37,7 +37,7 @@
                             // show current date/time
                             string currentTime = DateTime.Now.ToString("s");
 
-                            <label class="mr-4" style="min-width:fit-content" for="currentTime"><b>Timestamp</b></label>
+                            <label class="mr-4" style="min-width:fit-content" for="currentTime"><b>Timestamp (added 7 days internally for testing purposes)</b></label>
                             <input type="text" class="form-control" id="return-time" name="currentTime" value=@currentTime data-val="true" data-val-required="*" readonly>
                         }
                     </div>
