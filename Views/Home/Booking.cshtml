@@ -1,39 +1,86 @@
-﻿@model PreBookingViewModel
+﻿@using ASolCarRental.Infrastructure.Data
+@model PreBookingViewModel
 
 @{
     ViewData["Title"] = "Booking";
 }
 <h1>@ViewData["Title"]</h1>
 
-<div class="container">
-    
-    <div class="row">       
-        <div class="m-4 d-flex align-items-center">            
-            <label class="mr-4" style="min-width:fit-content" for="carType">Car Type:</label>
-            <select id="carType" class="form-control" name="carType" data-val="true" data-val-required="*">
-                <option value=1>Small</option>
-                <option value=2>Estate</option>
-                <option value=3>Truck</option>
-            </select>
-        </div>
-        @*<div class="m-4">
-            @{
-                //Only allow booking from today to a week in advance
-                string firstDate = DateTime.Now.ToString("yyyy-MM-dd");
-                string lastDate = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd");
+<hr />
 
-                <label class="mr-4" for="rentalDay">Rental Day:</label>
-                <input type="date" id="rentalDay" name="rentalDay" value=@firstDate min=@firstDate max=@lastDate />
-            }
-        </div>*@
+<div class="container d-flex flex-wrap">
+    <div class="col-lg-6 mb-5">
+        <div class="row">
+            <div>
+                <label class="mr-4" style="min-width:fit-content" for="carType"><b>Available cars</b></label>
+                <select id="car-type" class="form-control" name="carType">
+                    <option value=0>Select car type:</option>
+                    @foreach(var cartype in Helpers.CarTypes){
+                        <option value=@cartype.Key>@cartype.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div id="carsByType"></div>
+        </div>
+        <div class="row d-flex mt-5">
+            <button id="book-selection" type="button" class="btn btn-secondary app-colors booking-btn" onclick="loadBooking()">Start Booking</button>
+        </div>
     </div>
-    @*<div class="row d-flex justify-content-end mt-5">
-        <button type="button" class="btn btn-primary app-colors">Check Availability</button>
-    </div>*@
-    <ul>
-        @foreach (var car in Model.AvailableCars)
-        {
-            <li>@car.Description, @car.Id, @car.Registration</li>
-        }
-    </ul>
+
+    <div class="col-lg-6">
+        <label class="mr-4" for="carBookingForm"><b>Booking Data</b></label>
+        <div id="car-booking-form" name="carBookingForm">
+            @using (Html.BeginForm(FormMethod.Post, new { id = "carBookingForm" }))
+            {
+                <div class="form-group form-inline p-0">
+                    <label class="booking-form-label" for="carType">Car Type:</label>
+                    <input type="text" class="form-control" id="car-category" name="carType" data-val="true" data-val-required="*" readonly>
+                </div>
+                <div class="form-group form-inline p-0">
+                    <label class="booking-form-label" for="carId">Car ID:</label>
+                    <input type="text" class="form-control" id="car-id" name="carId" data-val="true" data-val-required="*" readonly>
+                </div>
+                <div class="form-group form-inline p-0">
+                    <label class="booking-form-label" for="carMileage">Current Mileage:</label>
+                    <input type="text" class="form-control" id="car-mileage" name="carMileage" data-val="true" data-val-required="*" readonly>
+                </div>
+                <div class="form-group form-inline p-0">
+                    <label class="booking-form-label" for="carRegistration">Car Registration:</label>
+                    <input type="text" class="form-control" id="car-registration" name="carRegistration" data-val="true" data-val-required="*" readonly>
+                </div>
+                <div class="form-group form-inline p-0">
+                    @{
+                        //Only allow booking from today to a week in advance
+                        string firstDate = DateTime.Now.ToString("yyyy-MM-dd");
+                        string lastDate = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd");
+
+                        <label class="booking-form-label" for="bookingDay">Rental Day:</label>
+                        <input class="form-control" id="booking-date" type="date" name="bookingDay" value=@firstDate min=@firstDate max=@lastDate data-val-required="*" />
+                    }
+                </div>
+                <div class="form-group form-inline p-0">
+                    <label class="booking-form-label" for="bookingTime">Rental Start Time:</label>
+                    <select id="booking-time" class="form-control form-inline p-0" name="bookingTime" data-val="true"  data-val-required="*" style="width:80px">
+                        @{
+                            int i = 0;
+                            @foreach (var time in Helpers.OperationalTimes)
+                            {
+                                <option value=@i> @time </option>
+                                i+= 1;
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group form-inline p-0">
+                    <label class="booking-form-label" for="customerId" style="width:120px">Customer ID:</label>
+                    <input type="text" class="form-control" id="customer-id" name="customerID" data-val="true" data-val-required="*">
+                </div>
+                <button class="btn btn-secondary app-colors" id="book-car" style="margin: 30px 10px">Book</button>
+            }
+        </div>
+    </div>
 </div>
+
+<script src="~/js/Home/Booking.js" asp-append-version="true"></script>
