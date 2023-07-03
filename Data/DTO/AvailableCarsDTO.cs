@@ -9,7 +9,8 @@ namespace ASolCarRental.Data.DTO
     {
         public int Id { get; set; }
         public string Registration { get; set; }
-        public Int16 Type { get; set; }
+        public short Type { get; set; }
         public string Description { get; set; }
+        public int Mileage { get; set; }
     }
 }
